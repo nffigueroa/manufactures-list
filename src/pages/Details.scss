@@ -1,0 +1,12 @@
+.details-container {
+    text-align: left;
+    &__label {
+        font-size: 14px;
+        b {
+            font-size: 18px;
+        }
+    }
+    table {
+        tr:nth-child(2n+3) {background: #CCC}
+    }
+}
