@@ -4,28 +4,28 @@ import { getManufactures } from '../services';
 import { ManufacturerContext } from '../context/manufacturers';
 
 export const useManufactures = () => {
-  const { currentPage } = React.useContext(ManufacturerContext);
-  const [manufacturers, setManufacturers] = React.useState<ManufacturerBody[]>(
-    []
-  );
+  let pagesStored = {};
+  const { currentPage, setManufacturers } =
+    React.useContext(ManufacturerContext);
 
   React.useEffect(() => {
-    console.log(currentPage);
-
-    if (!currentPage) {
+    if (
+      !currentPage ||
+      Object.keys(pagesStored).includes(String(currentPage))
+    ) {
       return;
     }
+    pagesStored = { ...pagesStored, [currentPage]: currentPage };
+
     (async () => {
       try {
         const manufacturersResponse: ManufacturerBody[] = await getManufactures(
           currentPage
         );
-        setManufacturers([...manufacturers, ...manufacturersResponse]);
+        setManufacturers(manufacturersResponse);
       } catch (error) {
         console.error(error);
       }
     })();
   }, [currentPage]);
-
-  return { manufacturers };
 };

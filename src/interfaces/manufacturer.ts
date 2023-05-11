@@ -1,9 +1,10 @@
 export interface ManufacturerBody {
-  Mfr_ID: string;
+  Mfr_ID: string | number;
   Mfr_Name: string;
   VehicleTypes: VehiclesType[];
+  Mfr_CommonName?: string | null;
   Country: string;
-  modelNames: ModelNames[];
+  modelNames?: ModelNames[];
 }
 
 export interface VehiclesType {

@@ -9,17 +9,20 @@ const TableComponent = ({ tableBody, tableHeader }: TableComponentProps) => {
   return (
     <>
       {tableBody?.length ? (
-        <table>
+        <table data-testid={'table-component'}>
           <thead>
             <tr>
-              {tableHeader?.map((item: string) => (
-                <td>{item}</td>
+              {tableHeader?.map((item: string, index: number) => (
+                <td key={index + item}>{item}</td>
               ))}
             </tr>
           </thead>
           <tbody>
-            {tableBody.map((item) => (
-              <tr>
+            {tableBody.map((item, index) => (
+              <tr
+                data-testid={'row' + index}
+                key={`${index}${item[Object.keys(item)[0]]}`}
+              >
                 {Object.keys(item).map((key: string) => (
                   <td>{item[key]}</td>
                 ))}

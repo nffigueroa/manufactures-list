@@ -1,33 +1,47 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { ManufacturerContext } from '../context/manufacturers';
 import { useManufactures } from '../hooks';
 import TableComponent from '../components/Table/Table';
 import { TableHeader } from '../components/Table/const';
 import { useNavigate } from 'react-router-dom';
 
-export const HomePage = () => {
-  const {
-    currentPage,
-    setCurrentPage,
-    setManufacturers,
-    manufacturersForTable,
-    redirectTo,
-  } = React.useContext(ManufacturerContext);
-  const { manufacturers } = useManufactures();
+export const HomePage = memo(() => {
+  const [manufacturersForTable, setManufacturersForTable] = React.useState<
+    Record<string, string>[]
+  >([]);
+  const { currentPage, setCurrentPage, manufacturers } =
+    React.useContext(ManufacturerContext);
+
+  useManufactures();
   const navigate = useNavigate();
 
+  const handleSeeDetailsClick = (mfId: string) => {
+    navigate(`/details`, {
+      state: {
+        mfId,
+      },
+    });
+  };
+
   React.useEffect(() => {
-    if (!redirectTo) {
-      return;
-    }
-    navigate(redirectTo);
-  }, [redirectTo]);
-  React.useEffect(() => {
-    if (!manufacturers.length) {
-      return;
-    }
-    setManufacturers(manufacturers);
+    const manufacturersFormatted = manufacturers.map(
+      ({ Country, Mfr_Name, Mfr_ID }) => ({
+        id: Mfr_ID,
+        commonName: Mfr_Name,
+        country: Country,
+        details: (
+          <>
+            <a onClick={() => handleSeeDetailsClick(String(Mfr_ID))}>Details</a>
+          </>
+        ),
+      })
+    );
+    setManufacturersForTable([
+      ...manufacturersForTable,
+      ...(manufacturersFormatted as Record<string, any>[]),
+    ]);
   }, [manufacturers]);
+
   return (
     <>
       <TableComponent
@@ -38,9 +52,8 @@ export const HomePage = () => {
         style={{
           border: '1px solid black',
           borderRadius: '4px',
-          position: 'fixed',
-          left: '100px',
-          bottom: '100px',
+          position: 'relative',
+          left: '0',
           padding: '8px',
         }}
         onClick={() => {
@@ -51,4 +64,4 @@ export const HomePage = () => {
       </div>
     </>
   );
-};
+});

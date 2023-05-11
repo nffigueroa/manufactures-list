@@ -8,8 +8,8 @@ function App() {
     <Router>
       <ManufacturersProvider>
         <Routes>
-          <Route path='/' element={<HomePage />} />
-          <Route path='/details' element={<DetailsPage />} />
+          <Route path='/' Component={() => <HomePage />} />
+          <Route path='/details' Component={() => <DetailsPage />} />
         </Routes>
       </ManufacturersProvider>
     </Router>

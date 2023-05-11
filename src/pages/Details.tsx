@@ -1,24 +1,27 @@
 import React from 'react';
 import { ManufacturerContext } from '../context/manufacturers';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import './Details.scss';
+import { useManufacturerDetails } from '../hooks';
 
 export const DetailsPage = () => {
   const {
     manufacturerDetail: { Country, Mfr_ID, Mfr_Name, models },
   } = React.useContext(ManufacturerContext);
-  console.log(Mfr_Name);
-  const navigate = useNavigate();
+
+  const ctx = React.useContext(ManufacturerContext);
+  console.log(ctx);
+
+  const location = useLocation();
+  const { setManufacturerId } = useManufacturerDetails();
 
   React.useEffect(() => {
-    if (!Mfr_Name) {
-      navigate('/');
-    }
-  }, []);
+    setManufacturerId(location?.state?.mfId);
+  }, [location]);
 
   return (
     <main className='details-container'>
-      <section className='details-container__label'>
+      <section className='details-container__label' data-testid={'brand-name'}>
         <b>Brand name:</b> {Mfr_Name}
       </section>
       <section className='details-container__label'>
@@ -28,15 +31,16 @@ export const DetailsPage = () => {
         <b>Country:</b> {Country}
       </section>
       <section className='details-container__label'>
-        <b>Models:</b>{' '}
+        <b>Models:</b>
       </section>
-      <table>
+      <table data-testid={'models-table'}>
         <tbody>
-          {models.map((item, index) => (
-            <tr key={index + item.Make_Name}>
-              <td>{item.Model_Name}</td>
-            </tr>
-          ))}
+          {models?.length &&
+            models.map((item, index) => (
+              <tr key={index + item.Make_Name}>
+                <td>{item.Model_Name}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </main>
